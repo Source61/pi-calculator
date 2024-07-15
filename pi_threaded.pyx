@@ -10,13 +10,13 @@ import os, time
 cdef:
   double pi = 1.0
 
-  #unsigned short cores = os.cpu_count()
-  unsigned short cores = max(int(os.cpu_count()/2), 1)
+  unsigned short cores = os.cpu_count()
+  #unsigned short cores = max(int(os.cpu_count()/2), 1)
   unsigned short corenum
   omp_lock_t lock
   
   unsigned long long counter = 0
-  unsigned long long dest = int(1E8) * cores
+  unsigned long long dest = int(1E9) * cores
   unsigned long long destSplit = int(dest / cores)
   unsigned long long vectorCacheSize = int(1E8)
   
@@ -46,7 +46,7 @@ cdef:
       double* cachedValues = <double*>calloc(vectorCacheSize+1, sizeof(double))
       unsigned long long cachedValueIndex = 0
 
-    printf("Coreid %d, start %d, end %d\n", coreid, start, end)
+    printf("Coreid %llu, start %llu, end %llu\n", coreid, start, end)
 
     for n in range(start, end):
       value = 1 / (n * 2 + 1)
