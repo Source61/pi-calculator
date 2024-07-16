@@ -1,0 +1,8 @@
+#!/bin/bash
+
+mkdir -p build
+cd build
+#cmake ../
+cmake -DCMAKE_PREFIX_PATH=/usr/share/libtorch .. &&
+make -j `nproc` &&
+time ./example-app
