@@ -12,7 +12,7 @@ double microtime() {
 
 int main() {
   double tstart = microtime();
-  uint_fast64_t memSize = 1E8;
+  uint_fast64_t memSize = 1E8 * 3;
   uint_fast64_t totalSize = 1E8 * 16;
 
   uint_fast64_t rounds = ceil(totalSize / memSize);
@@ -27,11 +27,11 @@ int main() {
   if (torch::cuda::is_available())
     options = options.device(torch::kCUDA, 0);
 
-  torch::Tensor t1 = torch::ones({memSize}, options);
+  torch::Tensor t1 = torch::ones(memSize, options);
   torch::Tensor t2;
   torch::Tensor t3;
   for(i=0; i<rounds; i++) {
-    t2 = torch::arange((i*memSize)+1, ((i+2)*memSize)+1, 2, options);
+    t2 = torch::arange((i*memSize*2)+1, ((i+1)*memSize*2)+1, 2, options);
     if (shouldSwitch) {
       if (theSwitch)
         startIndex = 1;
@@ -46,6 +46,6 @@ int main() {
     pi += (t3*4).item<double>();
 	}
   double tstop = microtime();
-  std::cout << "t2[-1]: " << t2[-1] << std::endl;
+  std::cout << "t2[-1]: " << t2[-1].item<double>() << std::endl;
   printf("Execution time: %fs. Samples: %llu (%llu rounds, memSize %llu). Pi: %.40f\n", tstop-tstart, totalSize, i, memSize, pi);
 }

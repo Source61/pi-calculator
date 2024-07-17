@@ -16,9 +16,9 @@ cdef:
   omp_lock_t lock
   
   unsigned long long counter = 0
-  unsigned long long dest = int(1E9) * cores
+  unsigned long long dest = int(1E8) * cores
   unsigned long long destSplit = int(dest / cores)
-  unsigned long long vectorCacheSize = int(1E8)
+  unsigned long long vectorCacheSize = int(1E8) * 3
   
   void calcPiArray(double* array, unsigned long long size) noexcept nogil:
     global pi, counter

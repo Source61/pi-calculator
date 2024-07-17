@@ -24,7 +24,7 @@ void _calcPi(unsigned short coreid) {
 
   double tstart = microtime();
   for (unsigned long long n=start; n<=end; n++) {
-    double value = 1.0 / (n * 2 + 1); // this is basically the only cost; 0.23s for 1E9 entries
+    double value = 1.0 / (n * 2 + 1); // this is basically the only cost; 0.23s for 1E8 * 16 iterations/samples
     if (lastAddition)
       local_pi -= value;
     else
@@ -63,7 +63,7 @@ int main() {
 	double start, stop;
 
 	start = microtime();
-	calcPi(16, (unsigned long long)1E8);
+	calcPi(16, 1E8);
 	stop = microtime();
 	
 	printf("Execution time: %fs. Counter: %llu. Pi: %.20f\n", stop-start, counter.load(), pi.load()*4);
