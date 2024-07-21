@@ -24,6 +24,7 @@ void calcPi(unsigned short threadid) {
   mpf_t value;
   mpf_t divisor;
   mpf_t one;
+  mpf_t two;
   mpf_t nptr;
 
   mpf_init(local_pi);
@@ -31,16 +32,18 @@ void calcPi(unsigned short threadid) {
   mpf_init(divisor);
   mpf_init2(one, 53);
   mpf_set_d(one, 1.0);
+  mpf_init2(two, 53);
+  mpf_set_d(two, 2.0);
   mpf_init2(nptr, 53);
 
   for (unsigned long long n=start; n<=end; n++) {
-    mpf_set_d(value, 1.0);
-    mpf_set_d(divisor, 2.0);
+    //mpf_set_d(value, 1.0);
+    //mpf_set_d(divisor, 2.0);
     mpf_set_d(nptr, n);
 
-    mpf_mul(divisor, divisor, nptr); // divisor = 2 * n 
+    mpf_mul(divisor, two, nptr); // divisor = 2 * n 
     mpf_add(divisor, divisor, one); // divisor = 2 * n + 1
-    mpf_div(value, value, divisor); // value = 1 / (2 * n + 1)
+    mpf_div(value, one, divisor); // value = 1 / (2 * n + 1)
 
     if (lastAddition)
       mpf_sub(local_pi, local_pi, value);
@@ -57,13 +60,11 @@ void calcPi(unsigned short threadid) {
 void run(unsigned short threadsCount, unsigned long long totalRounds) {
   std::vector<std::thread> threads(threadsCount);
   if ((totalRounds == 0 || threadsCount == 0)) {
-    printf("Either totalRounds or timeout must be specified or else the program runs forever\n");
+    printf("TotalRounds and threadsCount must not be 0\n");
     exit(1);
   }
-  if (totalRounds) {
-    splitRounds = checkTotalRounds = totalRounds;
-    checkTotalRounds *= threadsCount;
-  }
+  splitRounds = checkTotalRounds = totalRounds;
+  checkTotalRounds *= threadsCount;
   for (unsigned short threadid=0; threadid<threadsCount; threadid++) {
     threads[threadid] = std::thread(calcPi, threadid);
   }
